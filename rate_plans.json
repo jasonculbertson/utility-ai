@@ -1,0 +1,49 @@
+{
+  "E-1": {
+    "description": "Flat Rate (Tiered Pricing)",
+    "season": "All Year",
+    "peakRate": 0.31,
+    "offPeakRate": 0.31,
+    "notes": "Simplified flat rate"
+  },
+  "ETOUB": {
+    "description": "Time-of-Use (4-9pm Peak)",
+    "season": "Winter",
+    "peakRate": 0.42,
+    "offPeakRate": 0.33,
+    "peakHours": "4pm-9pm",
+    "notes": "Winter TOU rate"
+  },
+  "ETOUC": {
+    "description": "Time-of-Use (4-9pm Peak)",
+    "season": "Winter",
+    "peakRate": 0.42,
+    "offPeakRate": 0.33,
+    "peakHours": "4pm-9pm",
+    "notes": "Winter TOU rate"
+  },
+  "ETOUD": {
+    "description": "Time-of-Use (3-8pm Peak)",
+    "season": "Winter",
+    "peakRate": 0.40,
+    "offPeakRate": 0.32,
+    "peakHours": "3pm-8pm",
+    "notes": "Winter TOU rate"
+  },
+  "EV2A": {
+    "description": "Time-of-Use (EV Owners)",
+    "season": "Winter",
+    "peakRate": 0.35,
+    "offPeakRate": 0.27,
+    "notes": "Winter EV rate"
+  },
+  "ETOIJ3": {
+    "alias": "ETOUB",
+    "description": "Time-of-Use (4-9pm Peak)",
+    "season": "Winter",
+    "peakRate": 0.42,
+    "offPeakRate": 0.33,
+    "peakHours": "4pm-9pm",
+    "notes": "Winter TOU rate (OCR often misreads as ETOIJ3)"
+  }
+}

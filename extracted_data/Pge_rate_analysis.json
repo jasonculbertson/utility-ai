@@ -1,0 +1,68 @@
+{
+    "currentPlan": "E-TOU-B",
+    "bestPlan": "EV2-A",
+    "monthlySavings": "21.09",
+    "yearlySavings": "253.12",
+    "plans": [
+        {
+            "name": "EV2-A",
+            "description": "Time-of-Use (EV Owners)",
+            "peakRate": 0.35,
+            "offPeakRate": 0.27,
+            "monthlyCost": 175.72,
+            "yearlyCost": 2108.6,
+            "monthlySavings": 21.09,
+            "yearlySavings": 253.12
+        },
+        {
+            "name": "E-1",
+            "description": "Flat Rate (Tiered Pricing)",
+            "peakRate": 0.31,
+            "offPeakRate": 0.31,
+            "monthlyCost": 195.26,
+            "yearlyCost": 2343.15,
+            "monthlySavings": 1.55,
+            "yearlySavings": 18.57
+        },
+        {
+            "name": "E-TOU-D",
+            "description": "Time-of-Use (3-8pm Peak)",
+            "peakRate": 0.4,
+            "offPeakRate": 0.32,
+            "monthlyCost": 207.21,
+            "yearlyCost": 2486.53,
+            "monthlySavings": -10.4,
+            "yearlySavings": -124.81
+        },
+        {
+            "name": "E-TOU-B",
+            "description": "Time-of-Use (4-9pm Peak)",
+            "peakRate": 0.42,
+            "offPeakRate": 0.33,
+            "monthlyCost": 214.22,
+            "yearlyCost": 2570.59,
+            "monthlySavings": -17.41,
+            "yearlySavings": -208.87
+        },
+        {
+            "name": "E-TOU-C",
+            "description": "Time-of-Use (4-9pm Peak)",
+            "peakRate": 0.42,
+            "offPeakRate": 0.33,
+            "monthlyCost": 214.22,
+            "yearlyCost": 2570.59,
+            "monthlySavings": -17.41,
+            "yearlySavings": -208.87
+        }
+    ],
+    "usageAnalysis": [
+        "Peak usage: 70.616 kWh at $0.44583/kWh",
+        "Off-peak usage: 559.264 kWh at $0.40703/kWh",
+        "Total current charges: $196.81"
+    ],
+    "recommendations": [
+        "Consider shifting more usage to off-peak hours to maximize savings.",
+        "Based on your usage patterns, the EV2-A plan would be most cost-effective.",
+        "You could save approximately $21.09 per month by switching to the EV2-A plan."
+    ]
+}

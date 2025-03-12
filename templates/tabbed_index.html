@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PG&E Bill Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #0066cc;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        /* Tab Navigation Styles */
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        .tab-button.active {
+            background-color: #0066cc;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .upload-section, .processed-bills-section {
+            background: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .upload-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .file-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .submit-button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .submit-button:hover {
+            background-color: #0052a3;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .processing {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .processing-step {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+        }
+        .step-current {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+        .step-complete {
+            background-color: #d4edda;
+        }
+        .bill-details {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .savings-highlight {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .rate-plan-cell {
+            display: flex;
+            flex-direction: column;
+        }
+        .best-plan {
+            background-color: #d4edda;
+            padding: 3px 6px;
+            border-radius: 3px;
+            margin-top: 3px;
+            font-size: 0.8em;
+        }
+        .action-button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+        .action-button:hover {
+            background-color: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <h1>PG&E Bill Processor</h1>
+    
+    <div class="container">
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-button active" data-tab="upload-tab">Upload PG&E Bill</button>
+            <button class="tab-button" data-tab="manual-tab">Manual Entry</button>
+        </div>
+        
+        <!-- Upload Tab Content -->
+        <div id="upload-tab" class="tab-content active">
+            <div class="upload-section">
+                <h2>Upload PG&E Bill</h2>
+                <form id="upload-form" class="upload-form" enctype="multipart/form-data">
+                    <input type="file" name="bills" accept=".pdf" class="file-input" required>
+                    <button type="submit" class="submit-button">Upload and Process</button>
+                </form>
+                <div id="status" class="status"></div>
+            </div>
+        </div>
+        
+        <!-- Manual Entry Tab Content -->
+        <div id="manual-tab" class="tab-content">
+            <div class="upload-section">
+                <h2>Manual Bill Entry</h2>
+                <form id="manual-entry-form" class="upload-form">
+                    <div style="margin-bottom: 15px;">
+                        <label for="billing-start">Billing Period Start:</label>
+                        <input type="date" id="billing-start" name="billingStart" class="file-input" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="billing-end">Billing Period End:</label>
+                        <input type="date" id="billing-end" name="billingEnd" class="file-input" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="current-rate">Current Rate Plan:</label>
+                        <select id="current-rate" name="ratePlan" class="file-input" required>
+                            <option value="E-1">E-1: Flat Rate (Tiered Pricing)</option>
+                            <option value="E-TOU-B" selected>E-TOU-B: Time-of-Use (4-9pm Peak)</option>
+                            <option value="E-TOU-C">E-TOU-C: Time-of-Use (4-9pm Peak)</option>
+                            <option value="E-TOU-D">E-TOU-D: Time-of-Use (3-8pm Peak)</option>
+                            <option value="EV2-A">EV2-A: Time-of-Use (EV Owners)</option>
+                        </select>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="peak-kwh">Peak kWh Usage:</label>
+                        <input type="number" id="peak-kwh" name="peakUsage" class="file-input" step="0.01" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="peak-rate">Peak Rate ($/kWh):</label>
+                        <input type="number" id="peak-rate" name="peakRate" class="file-input" step="0.00001" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="off-peak-kwh">Off-Peak kWh Usage:</label>
+                        <input type="number" id="off-peak-kwh" name="offPeakUsage" class="file-input" step="0.01" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="off-peak-rate">Off-Peak Rate ($/kWh):</label>
+                        <input type="number" id="off-peak-rate" name="offPeakRate" class="file-input" step="0.00001" required>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="amount-due">Total Amount Due ($):</label>
+                        <input type="number" id="amount-due" name="amountDue" class="file-input" step="0.01" required>
+                    </div>
+                    
+                    <button type="submit" class="submit-button">Process Manual Entry</button>
+                </form>
+                <div id="manual-status" class="status"></div>
+            </div>
+        </div>
+        
+        <div id="processed-bills-section" class="processed-bills-section" style="display: none;">
+            <h2>Processed Bills</h2>
+            <div id="bill-list"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('upload-form');
+            const status = document.getElementById('status');
+            
+            // Tab Navigation
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // Rate Plan Defaults
+            const ratePlanDropdown = document.getElementById('current-rate');
+            const peakRateInput = document.getElementById('peak-rate');
+            const offPeakRateInput = document.getElementById('off-peak-rate');
+            
+            // Define rate plan details (based on the MEMORY provided)
+            const ratePlans = {
+                'E-1': { peakRate: 0.31, offPeakRate: 0.31 }, // Flat rate is the same for both
+                'E-TOU-B': { peakRate: 0.42, offPeakRate: 0.33 },
+                'E-TOU-C': { peakRate: 0.42, offPeakRate: 0.33 },
+                'E-TOU-D': { peakRate: 0.40, offPeakRate: 0.32 }, // Using winter rates as default
+                'EV2-A': { peakRate: 0.35, offPeakRate: 0.27 }  // Using winter rates as default
+            };
+            
+            // Function to update rate fields based on selected plan
+            function updateRateFields() {
+                const selectedPlan = ratePlanDropdown.value;
+                const planRates = ratePlans[selectedPlan];
+                
+                if (planRates) {
+                    peakRateInput.value = planRates.peakRate;
+                    offPeakRateInput.value = planRates.offPeakRate;
+                }
+            }
+            
+            // Set initial values based on default selection
+            updateRateFields();
+            
+            // Update rates when plan selection changes
+            ratePlanDropdown.addEventListener('change', updateRateFields);
+            
+            // Manual Entry Form Submission
+            const manualEntryForm = document.getElementById('manual-entry-form');
+            const manualStatus = document.getElementById('manual-status');
+            
+            manualEntryForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Create form data object
+                const formData = {};
+                new FormData(manualEntryForm).forEach((value, key) => {
+                    formData[key] = value;
+                });
+                
+                manualStatus.className = 'status processing';
+                manualStatus.innerHTML = '<p>Processing manual entry...</p>';
+                
+                // Send data to server
+                fetch('/manual-entry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        manualStatus.className = 'status success';
+                        manualStatus.innerHTML = `<p>${data.message}</p>`;
+                        refreshBillList();
+                    } else {
+                        manualStatus.className = 'status error';
+                        manualStatus.innerHTML = `<p>Error: ${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    manualStatus.className = 'status error';
+                    manualStatus.innerHTML = `<p>Submission failed: ${error.message}</p>`;
+                });
+            });
+            
+            // Check if there are any processed bills
+            refreshBillList();
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                status.className = 'status processing';
+                status.innerHTML = '<p>Uploading file...</p>';
+                
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        status.className = 'status success';
+                        status.innerHTML = `<p>${data.message}</p>`;
+                        // Start checking processing status
+                        checkProcessingStatus();
+                    } else {
+                        status.className = 'status error';
+                        status.innerHTML = `<p>Error: ${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    status.className = 'status error';
+                    status.innerHTML = `<p>Upload failed: ${error.message}</p>`;
+                });
+            });
+            
+            function checkProcessingStatus() {
+                fetch('/processing-status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.processing) {
+                            status.className = 'status processing';
+                            // Show detailed processing steps
+                            let stepsHtml = '<h3>Processing Bill...</h3>';
+                            stepsHtml += '<div class="processing-step step-complete">✓ Uploading PDF</div>';
+                            
+                            if (data.step === 'ocr') {
+                                stepsHtml += '<div class="processing-step step-current">⟳ Extracting text with OCR</div>';
+                                stepsHtml += '<div class="processing-step">⋯ Analyzing bill data</div>';
+                                stepsHtml += '<div class="processing-step">⋯ Analyzing rate plans</div>';
+                            } else if (data.step === 'analyze') {
+                                stepsHtml += '<div class="processing-step step-complete">✓ Extracted text with OCR</div>';
+                                stepsHtml += '<div class="processing-step step-current">⟳ Analyzing bill data</div>';
+                                stepsHtml += '<div class="processing-step">⋯ Analyzing rate plans</div>';
+                            } else if (data.step === 'rate_analysis') {
+                                stepsHtml += '<div class="processing-step step-complete">✓ Extracted text with OCR</div>';
+                                stepsHtml += '<div class="processing-step step-complete">✓ Analyzed bill data</div>';
+                                stepsHtml += '<div class="processing-step step-current">⟳ Analyzing rate plans</div>';
+                            }
+                            
+                            stepsHtml += `<p>${data.message}</p>`;
+                            status.innerHTML = stepsHtml;
+                            setTimeout(checkProcessingStatus, 2000); // Check again in 2 seconds
+                        } else {
+                            status.className = 'status success';
+                            status.innerHTML = `<h3>Processing Complete!</h3><p>${data.message}</p>`;
+                            refreshBillList();
+                        }
+                    })
+                    .catch(error => {
+                        status.className = 'status error';
+                        status.innerHTML = `<p>Error checking status: ${error.message}</p>`;
+                    });
+            }
+            
+            function refreshBillList() {
+                fetch('/bill-list')
+                    .then(response => response.json())
+                    .then(data => {
+                        const billList = document.getElementById('bill-list');
+                        const processedBillsSection = document.getElementById('processed-bills-section');
+                        
+                        if (data.bills.length === 0) {
+                            billList.innerHTML = '<p>No processed bills found.</p>';
+                            processedBillsSection.style.display = 'none';
+                            return;
+                        }
+                        
+                        // Show the section if we have bills
+                        processedBillsSection.style.display = 'block';
+                        
+                        let html = '<table>';
+                        html += '<tr><th>Customer</th><th>Billing Period</th><th>Current Rate Plan</th><th>Total Amount Due</th><th>Suggested Rate Plan</th><th>Projected Amount Due</th><th>Savings</th></tr>';
+                        
+                        data.bills.forEach(bill => {
+                            // Check if rate analysis is available
+                            const hasAnalysis = bill.analysis && bill.analysis.currentPlan;
+                            
+                            // Format savings with highlighting if positive
+                            let savingsDisplay = 'N/A';
+                            if (hasAnalysis) {
+                                const monthlySavings = parseFloat(bill.analysis.monthlySavings);
+                                const yearlySavings = parseFloat(bill.analysis.yearlySavings);
+                                const savingsClass = monthlySavings > 0 ? 'savings-highlight' : '';
+                                savingsDisplay = `<span class="${savingsClass}">$${bill.analysis.monthlySavings}/mo<br>$${bill.analysis.yearlySavings}/yr</span>`;
+                            }
+                            
+                            // Current rate plan display
+                            let currentRateDisplay = 'N/A';
+                            if (hasAnalysis) {
+                                currentRateDisplay = bill.analysis.currentPlan;
+                            }
+                            
+                            // Suggested rate plan display
+                            let suggestedRateDisplay = 'N/A';
+                            if (hasAnalysis) {
+                                suggestedRateDisplay = bill.analysis.bestPlan;
+                            }
+                            
+                            // Projected amount due
+                            let projectedAmountDisplay = 'N/A';
+                            if (hasAnalysis && bill.analysis.plans) {
+                                // Find the best plan's monthly cost
+                                const bestPlan = bill.analysis.plans.find(plan => plan.name === bill.analysis.bestPlan);
+                                if (bestPlan && bestPlan.monthlyCost) {
+                                    projectedAmountDisplay = `$${bestPlan.monthlyCost}`;
+                                }
+                            }
+                            
+                            // Determine if this is a manual entry (no customer name)
+                            const isManualEntry = !bill.data.customerName;
+                            
+                            html += `<tr>
+                                <td>${isManualEntry ? 'Manual Entry' : bill.data.customerName}</td>
+                                <td>${bill.data.billingPeriod || 'N/A'}</td>
+                                <td>${currentRateDisplay}</td>
+                                <td>$${bill.data.amountDue || 'N/A'}</td>
+                                <td>${suggestedRateDisplay}</td>
+                                <td>${projectedAmountDisplay}</td>
+                                <td>${savingsDisplay}</td>
+                            </tr>`;
+                        });
+                        
+                        html += '</table>';
+                        billList.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching bill list:', error);
+                    });
+            }
+        });
+    </script>
+</body>
+</html>

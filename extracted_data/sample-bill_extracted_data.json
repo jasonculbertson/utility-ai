@@ -1,0 +1,18 @@
+{
+    "Name": "JASON CULBERTSON",
+    "Address": "1080 WARFIELD AVE, OAKLAND, CA 94610",
+    "RateSchedule": {
+        "Code": "ETOUB B",
+        "Description": "Residential Time-of-Use Service"
+    },
+    "ElectricUsageThisPeriod": 741.183,
+    "BillingDays": 32,
+    "PeakUsage": 69.291,
+    "PeakRate": "$0.44583/kWh",
+    "PeakTotal": "$30.89",
+    "OffPeakUsage": 573.579,
+    "OffPeakRate": "$0.40703/kWh",
+    "OffPeakTotal": "$233.46",
+    "BillingPeriod": "12/05/2024 - 01/05/2025",
+    "TotalAmountDue": "$520.56"
+}

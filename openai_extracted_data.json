@@ -1,0 +1,16 @@
+{
+    "Name": "BENJAMIN HELLER",
+    "Address": "19 UNDERHILL RD, MILL VALLEY, CA 94941",
+    "RateSchedule": {
+        "Code": "Time-of-Use (Peak Pricing 4 - 9 p.m. Every Day)",
+        "Description": "Time-of-Use with Peak Pricing"
+    },
+    "ElectricUsageThisPeriod": 658.8925,
+    "BillingDays": 31,
+    "PeakUsage": 232.5,
+    "PeakRate": "$0.49378/kWh",
+    "PeakTotal": "$85.82",
+    "OffPeakUsage": 485.0805,
+    "OffPeakRate": "$0.46378/kWh",
+    "OffPeakTotal": "$224.97"
+}

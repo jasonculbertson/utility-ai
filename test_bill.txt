@@ -1,0 +1,7 @@
+Amount Due on Previous Statement: $150.00
+
+Payment(s) Received Since Last Statement: -$150.00
+
+Previous Unpaid Balance: $0.00
+
+Total Amount Due: $125.75

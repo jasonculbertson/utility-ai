@@ -1,0 +1,323 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PG&E Bill Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #005b96;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .upload-area:hover {
+            border-color: #005b96;
+            background-color: #f0f8ff;
+        }
+        #file-input {
+            display: none;
+        }
+        .btn {
+            background-color: #005b96;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #003d66;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .processing {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .savings-highlight {
+            color: green;
+            font-weight: bold;
+        }
+        .rate-plan-cell {
+            background-color: #e6f7ff;
+        }
+        .best-plan {
+            color: green;
+            font-weight: bold;
+        }
+        .processing-step {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .step-complete {
+            background-color: #d4edda;
+        }
+        .step-current {
+            background-color: #fff3cd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>PG&E Bill Processor</h1>
+    
+    <div class="upload-area" id="drop-area">
+        <p>Drag and drop PG&E bills here or</p>
+        <input type="file" id="file-input" accept=".pdf" multiple />
+        <button class="btn" onclick="document.getElementById('file-input').click()">Select Files</button>
+    </div>
+    
+    <div id="status" style="display: none;"></div>
+    
+    <div id="processed-bills-section" style="display: none;">
+        <h2>Processed Bills</h2>
+        <button class="btn" onclick="refreshBillList()">Refresh List</button>
+        <div id="bill-list">
+            <p>Loading processed bills...</p>
+        </div>
+    </div>
+    
+    <script>
+        // Set up the drag and drop functionality
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const status = document.getElementById('status');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+        
+        dropArea.addEventListener('drop', handleDrop, false);
+        fileInput.addEventListener('change', handleFiles, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles({ target: { files: files } });
+        }
+        
+        function handleFiles(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                uploadFiles(files);
+            }
+        }
+        
+        function uploadFiles(files) {
+            const formData = new FormData();
+            
+            for (let i = 0; i < files.length; i++) {
+                formData.append('bills', files[i]);
+            }
+            
+            status.style.display = 'block';
+            status.className = 'processing';
+            status.innerHTML = `<p>Uploading ${files.length} file(s)...</p>`;
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    status.className = 'success';
+                    status.innerHTML = `<p>${data.message}</p>`;
+                    // Start checking processing status
+                    checkProcessingStatus();
+                } else {
+                    status.className = 'error';
+                    status.innerHTML = `<p>Error: ${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                status.className = 'error';
+                status.innerHTML = `<p>Upload failed: ${error.message}</p>`;
+            });
+        }
+        
+        function checkProcessingStatus() {
+            fetch('/processing-status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.processing) {
+                        status.className = 'processing';
+                        // Show detailed processing steps
+                        let stepsHtml = '<h3>Processing Bill...</h3>';
+                        stepsHtml += '<div class="processing-step step-complete">✓ Uploading PDF</div>';
+                        
+                        if (data.step === 'ocr') {
+                            stepsHtml += '<div class="processing-step step-current">⟳ Extracting text with OCR</div>';
+                            stepsHtml += '<div class="processing-step">⋯ Analyzing bill data</div>';
+                            stepsHtml += '<div class="processing-step">⋯ Analyzing rate plans</div>';
+                        } else if (data.step === 'analyze') {
+                            stepsHtml += '<div class="processing-step step-complete">✓ Extracted text with OCR</div>';
+                            stepsHtml += '<div class="processing-step step-current">⟳ Analyzing bill data</div>';
+                            stepsHtml += '<div class="processing-step">⋯ Analyzing rate plans</div>';
+                        } else if (data.step === 'rate_analysis') {
+                            stepsHtml += '<div class="processing-step step-complete">✓ Extracted text with OCR</div>';
+                            stepsHtml += '<div class="processing-step step-complete">✓ Analyzed bill data</div>';
+                            stepsHtml += '<div class="processing-step step-current">⟳ Analyzing rate plans</div>';
+                        }
+                        
+                        stepsHtml += `<p>${data.message}</p>`;
+                        status.innerHTML = stepsHtml;
+                        setTimeout(checkProcessingStatus, 2000); // Check again in 2 seconds
+                    } else {
+                        status.className = 'success';
+                        status.innerHTML = `<h3>Processing Complete!</h3><p>${data.message}</p>`;
+                        refreshBillList();
+                    }
+                })
+                .catch(error => {
+                    status.className = 'error';
+                    status.innerHTML = `<p>Error checking status: ${error.message}</p>`;
+                });
+        }
+        
+        function refreshBillList() {
+            fetch('/bill-list')
+                .then(response => response.json())
+                .then(data => {
+                    const billList = document.getElementById('bill-list');
+                    const processedBillsSection = document.getElementById('processed-bills-section');
+                    
+                    if (data.bills.length === 0) {
+                        billList.innerHTML = '<p>No processed bills found.</p>';
+                        processedBillsSection.style.display = 'none';
+                        return;
+                    }
+                    
+                    // Show the section if we have bills
+                    processedBillsSection.style.display = 'block';
+                    
+                    let html = '<table>';
+                    html += '<tr><th>Bill Name</th><th>Customer</th><th>Billing Period</th><th>Amount Due</th><th>Rate Plan</th><th>Savings</th><th>Actions</th></tr>';
+                    
+                    data.bills.forEach(bill => {
+                        // Check if rate analysis is available
+                        const hasAnalysis = bill.analysis && bill.analysis.currentPlan;
+                        
+                        // Format savings with highlighting if positive
+                        let savingsDisplay = 'N/A';
+                        if (hasAnalysis) {
+                            const monthlySavings = parseFloat(bill.analysis.monthlySavings);
+                            const yearlySavings = parseFloat(bill.analysis.yearlySavings);
+                            const savingsClass = monthlySavings > 0 ? 'savings-highlight' : '';
+                            savingsDisplay = `<span class="${savingsClass}">$${bill.analysis.monthlySavings}/mo<br>$${bill.analysis.yearlySavings}/yr</span>`;
+                        }
+                        
+                        // Format rate plan display with highlighting for best plan
+                        let rateDisplay = 'N/A';
+                        if (hasAnalysis) {
+                            const currentPlan = bill.analysis.currentPlan;
+                            const bestPlan = bill.analysis.bestPlan;
+                            const isBestPlan = currentPlan === bestPlan;
+                            
+                            rateDisplay = `<div class="rate-plan-cell">
+                                Current: ${currentPlan}<br>
+                                ${isBestPlan ? 
+                                    '<span class="best-plan">✓ Already on best plan</span>' : 
+                                    `<span class="best-plan">Best: ${bestPlan}</span>`}
+                            </div>`;
+                        } else {
+                            // Get rate schedule from bill data if available
+                            const rateSchedule = bill.data.RateSchedule ? 
+                                (typeof bill.data.RateSchedule === 'object' ? 
+                                    bill.data.RateSchedule.Code : bill.data.RateSchedule) : 'N/A';
+                            rateDisplay = rateSchedule;
+                        }
+                        
+                        html += `<tr>
+                            <td>${bill.filename}</td>
+                            <td>${bill.data.Name || 'N/A'}</td>
+                            <td>${bill.data.BillingPeriod || 'N/A'}</td>
+                            <td>${bill.data.TotalAmountDue || 'N/A'}</td>
+                            <td>${rateDisplay}</td>
+                            <td>${savingsDisplay}</td>
+                            <td>
+                                <a href="/download/pdf/${bill.filename}" class="btn" target="_blank">View PDF</a>
+                                <a href="/download/json/${bill.filename}" class="btn" target="_blank">View Data</a>
+                                ${hasAnalysis ? `<a href="/view-analysis/${bill.filename}" class="btn" target="_blank">View Analysis</a>` : ''}
+                            </td>
+                        </tr>`;
+                    });
+                    
+                    html += '</table>';
+                    billList.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('bill-list').innerHTML = `<p>Error loading bills: ${error.message}</p>`;
+                });
+        }
+        
+        // Load the bill list when the page loads
+        document.addEventListener('DOMContentLoaded', refreshBillList);
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+    "currentPlan": "EV2A",
+    "currentPlanDescription": "Time-of-Use (EV Owners)",
+    "currentCost": 191.81,
+    "bestPlan": "EV2A",
+    "bestPlanDescription": "Time-of-Use (EV Owners)",
+    "bestCost": 191.81,
+    "monthlySavings": 0,
+    "yearlySavings": 0,
+    "recommendation": "Based on the provided data, the analysis suggests that the current rate plan, EV2A - Time-of-Use, is already the most cost-effective option for your electricity usage pattern. Here's why this plan is suitable for your usage:\n\n1. **Time-of-Use Structure**: The EV2A plan is designed for electric vehicle owners, optimizing costs by charging different rates for peak and off-peak hours. With a significant portion of your usage (485.0805 kWh) occurring during off-peak hours, the plan leverages lower rates during these times to reduce costs.\n\n2. **Balanced Usage**: Your usage distribution shows that you utilize more electricity during off-peak hours compared to peak hours. This aligns well with the time-of-use strategy of the EV2A plan, leading to cost savings without any adjustments needed.\n\n3. **No Cost Advantage on Switching**: Since the analysis indicates zero potential savings both monthly and yearly by switching plans, remaining on the current EV2A plan avoids any additional complexity or fluctuation in billing that might arise from changing plans.\n\nWhile this plan appears optimal now, consider the following when evaluating rate plans in the future:\n\n- **Usage Patterns**: Any changes in your daily routines (e.g., more daytime usage) might affect the suitability of the current plan. Regularly reviewing usage data can help ensure you're always on the best plan.\n  \n- **Rate Changes**: Utilities periodically adjust rate structures. Stay informed about any changes to ensure your plan remains the most cost-effective one for your needs.\n\n- **Alternative Plans and Promotions**: Occasionally, utilities offer promotions or introduce new plans. Even if these don't save money now, they might offer benefits or convenience in other ways.\n\nThis analysis assumes a stable usage pattern; any change in how and when you use electricity could influence which plan is best for you in the future.",
+    "allPlans": [
+        {
+            "planCode": "EV2A",
+            "peakCost": 60.83,
+            "offPeakCost": 130.97,
+            "totalCost": 191.81,
+            "description": "Time-of-Use (EV Owners)"
+        },
+        {
+            "planCode": "E-1",
+            "peakCost": 53.88,
+            "offPeakCost": 150.37,
+            "totalCost": 204.26,
+            "description": "Flat Rate (Tiered Pricing)"
+        },
+        {
+            "planCode": "ETOUD",
+            "peakCost": 69.52,
+            "offPeakCost": 155.23,
+            "totalCost": 224.75,
+            "description": "Time-of-Use (3-8pm Peak)"
+        },
+        {
+            "planCode": "ETOUB",
+            "peakCost": 73.0,
+            "offPeakCost": 160.08,
+            "totalCost": 233.08,
+            "description": "Time-of-Use (4-9pm Peak)"
+        },
+        {
+            "planCode": "ETOUC",
+            "peakCost": 73.0,
+            "offPeakCost": 160.08,
+            "totalCost": 233.08,
+            "description": "Time-of-Use (4-9pm Peak)"
+        }
+    ]
+}

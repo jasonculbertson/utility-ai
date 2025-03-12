@@ -1,0 +1,24 @@
+steps:
+# Deploy Cloud Function
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - pge-bill-processor
+  - --gen2
+  - --runtime=python39
+  - --region=us-west1
+  - --source=.
+  - --entry-point=process_storage_file
+  - --trigger-event-filters="type=google.cloud.storage.object.v1.finalized"
+  - --trigger-event-filters="bucket=${_WATCH_BUCKET}"
+  - --set-env-vars=SUPABASE_URL=${_SUPABASE_URL},SUPABASE_SERVICE_KEY=${_SUPABASE_SERVICE_KEY}
+  - --memory=1024MB
+  - --timeout=540s
+  - --min-instances=0
+  - --max-instances=1
+  dir: 'cloud_function'
+  env:
+  - 'SUPABASE_URL=${_SUPABASE_URL}'
+  - 'SUPABASE_SERVICE_KEY=${_SUPABASE_SERVICE_KEY}'

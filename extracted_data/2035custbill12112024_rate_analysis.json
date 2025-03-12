@@ -1,0 +1,48 @@
+{
+    "currentPlan": "ETOUB",
+    "currentPlanDescription": "Time-of-Use (4-9pm Peak)",
+    "currentCost": 214.22,
+    "bestPlan": "EV2A",
+    "bestPlanDescription": "Time-of-Use (EV Owners)",
+    "bestCost": 175.72,
+    "monthlySavings": 38.5,
+    "yearlySavings": 462.0,
+    "recommendation": "The EV2A - Time-of-Use (EV Owners) plan proves to be more cost-effective than the current ETOUB plan based on the provided electricity usage and costs. Here\u2019s why the EV2A plan is a better option:\n\n1. **Cost Savings**: With a monthly cost of $175.72 compared to the current $214.22, the EV2A plan offers immediate savings of $38.5 per month, totaling $462.0 annually. This significant reduction in cost directly benefits the customer\u2019s finances.\n\n2. **Usage Patterns**: With 70.616 kWh consumed during peak hours and 559.264 kWh during off-peak, it\u2019s evident that most of the customer's electricity usage occurs during off-peak times. The EV2A plan likely offers more favorable rates for off-peak usage, which aligns well with the customer's consumption pattern.\n\n3. **EV Ownership Benefit**: The EV2A plan, typically designed for electric vehicle owners, often provides lower rates or incentives for off-peak charging of electric cars. If the customer owns an electric vehicle, this plan can further optimize their energy costs by utilizing energy-efficient practices tailored for EV charging.\n\n**Considerations**:\n\n- **Rate Structure**: Before switching, the customer should understand the rate structure, including specific peak and off-peak hours, as these may differ from the current plan. Adjusting energy consumption habits to fit these hours can maximize savings.\n\n- **Eligibility Criteria**: The EV2A plan might have specific eligibility requirements, such as proof of EV ownership. The customer should ensure they meet these criteria to qualify for the plan.\n\n- **Plan Changes**: As energy needs or household circumstances change, re-evaluating energy plans periodically will ensure that the customer continues to benefit from the best available rates.\n\nSwitching to the EV2A plan presents a favorable opportunity for cost savings, especially if the customer can manage their energy usage to take full advantage of the off-peak rates.",
+    "allPlans": [
+        {
+            "planCode": "EV2A",
+            "peakCost": 24.72,
+            "offPeakCost": 151.0,
+            "totalCost": 175.72,
+            "description": "Time-of-Use (EV Owners)"
+        },
+        {
+            "planCode": "E-1",
+            "peakCost": 21.89,
+            "offPeakCost": 173.37,
+            "totalCost": 195.26,
+            "description": "Flat Rate (Tiered Pricing)"
+        },
+        {
+            "planCode": "ETOUD",
+            "peakCost": 28.25,
+            "offPeakCost": 178.96,
+            "totalCost": 207.21,
+            "description": "Time-of-Use (3-8pm Peak)"
+        },
+        {
+            "planCode": "ETOUB",
+            "peakCost": 29.66,
+            "offPeakCost": 184.56,
+            "totalCost": 214.22,
+            "description": "Time-of-Use (4-9pm Peak)"
+        },
+        {
+            "planCode": "ETOUC",
+            "peakCost": 29.66,
+            "offPeakCost": 184.56,
+            "totalCost": 214.22,
+            "description": "Time-of-Use (4-9pm Peak)"
+        }
+    ]
+}
