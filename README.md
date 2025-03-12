@@ -24,8 +24,8 @@ The application supports various PG&E rate plans including:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/jasonculbertson/utilityai.git
-   cd utilityai
+   git clone https://github.com/jasonculbertson/utility-ai.git
+   cd utility-ai
    ```
 
 2. Install dependencies:

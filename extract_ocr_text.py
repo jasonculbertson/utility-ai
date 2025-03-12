@@ -100,7 +100,7 @@ def extract_ocr_text(pdf_file, output_file=None, ocr_space_api_key='K86742198888
 
 def main():
     # Process the 3307custbill01022025.pdf file
-    pdf_file = '/Users/jasonculbertson/Documents/GitHub/utilityAI/processed_bills/3307custbill01022025.pdf'
+    pdf_file = '/Users/jasonculbertson/Documents/GitHub/utility-ai/processed_bills/3307custbill01022025.pdf'
     extract_ocr_text(pdf_file)
 
 if __name__ == '__main__':
