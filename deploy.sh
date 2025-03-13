@@ -5,7 +5,7 @@ PROJECT_ID="power-watch-449503"  # Google Cloud project ID
 REGION="us-west1"            # Replace with your preferred region
 SERVICE_NAME="pge-bill-analyzer"
 
-# Build the container
+# Build the containerdfdf
 gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
 # Deploy to Cloud Run
