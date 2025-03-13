@@ -20,8 +20,5 @@
       "dest": "/api/index.py"
     }
   ],
-  "env": {
-    "OPENAI_API_KEY": "@openai_api_key",
-    "OCR_SPACE_API_KEY": "@ocr_space_api_key"
-  }
+  "env": {}
 }
