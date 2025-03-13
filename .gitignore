@@ -1,0 +1,55 @@
+# Environment variables
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+temp/
+
+# PDF and image files (if not needed in repository)
+*.pdf
+*.png
+*.jpg
+*.jpeg
+
+# OCR output
+ocr_output/
+ocr_space_raw_output.json
+
+# Processed files
+bills_to_process/
+processed_bills/
+extracted_data/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
